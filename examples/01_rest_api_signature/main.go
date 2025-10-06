@@ -155,13 +155,11 @@ func buildRESTMessage(request RESTAPIRequest) string {
 		sortedParams = sortAndEncodeParameters(request.Parameters)
 	}
 
-	// Construct the message
-	message := fmt.Sprintf("%s|%s|%d|%s",
-		request.Method,
-		request.Path,
-		request.Timestamp,
-		sortedParams,
-	)
+	// Construct the message: TIMESTAMP + METHOD + PATH + PARAMS (no separators)
+	message := fmt.Sprintf("%d%s%s", request.Timestamp, request.Method, request.Path)
+	if sortedParams != "" {
+		message += sortedParams
+	}
 
 	return message
 }

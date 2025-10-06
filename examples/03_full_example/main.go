@@ -314,7 +314,12 @@ func buildSignatureMessage(method, path string, timestamp int64, params map[stri
 		sortedParams = sortAndEncodeParameters(params)
 	}
 
-	return fmt.Sprintf("%s|%s|%d|%s", method, path, timestamp, sortedParams)
+	// Format: TIMESTAMP + METHOD + PATH + PARAMS (no separators)
+	message := fmt.Sprintf("%d%s%s", timestamp, method, path)
+	if sortedParams != "" {
+		message += sortedParams
+	}
+	return message
 }
 
 // sortAndEncodeParameters sorts and URL-encodes parameters
@@ -345,9 +350,9 @@ func buildURL(baseURL, path string, params map[string]string) string {
 // buildAuthHeaders creates authentication headers with signature
 func buildAuthHeaders(signature string, timestamp int64) map[string]string {
 	return map[string]string{
-		"X-EdgeX-Signature": signature,
-		"X-EdgeX-Timestamp": strconv.FormatInt(timestamp, 10),
-		"X-EdgeX-API-Key":   "your-api-key-here", // In production, use actual API key
+		"X-edgeX-Api-Signature": signature,
+		"X-edgeX-Api-Timestamp": strconv.FormatInt(timestamp, 10),
+		"X-edgeX-Api-Key":       "your-api-key-here", // In production, use actual API key
 	}
 }
 
